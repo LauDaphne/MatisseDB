@@ -1,13 +1,21 @@
 package academia;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import com.matisse.MtDatabase;
 import com.matisse.MtException;
 import com.matisse.MtObjectIterator;
 import com.matisse.MtPackageObjectFactory;
 
 public class mainAcademia {
-
-	static MtDatabase db = new MtDatabase("localhost", "DBVinDaph", new MtPackageObjectFactory("", "academia"));
+	
+	static String hostname = "localhost";
+	static String dbname = "DBVinDaph";
+	static MtDatabase db = new MtDatabase(hostname, dbname, new MtPackageObjectFactory("", "academia"));
+	
 
 	// Crear objetos
 	public static void crearObjetos() {
@@ -121,20 +129,20 @@ public class mainAcademia {
 	public static void modificaObjetos(String nombre, Integer nuevaHoraInicio) {
 
 		int nAsignaturas = 0;
-		
+
 		try {
-			
+
 			// Abrir base de datos
 			db.open();
 			db.startTransaction();
-			
+
 			// Listar asignaturas
 			System.out.println(asignaturas.getInstanceNumber(db) + " asignaturas en la DB.");
 			nAsignaturas = (int) asignaturas.getInstanceNumber(db);
-			
+
 			// Crea un Iterador (propio de Java)
 			MtObjectIterator<asignaturas> iter = asignaturas.<asignaturas>instanceIterator(db);
-			
+
 			while (iter.hasNext()) {
 				asignaturas[] asig = iter.next(nAsignaturas);
 				for (int i = 0; i < asig.length; i++) {
@@ -144,7 +152,7 @@ public class mainAcademia {
 				}
 			}
 			iter.close();
-			
+
 			// Actualizar y cerrar base de datos
 			db.commit();
 			db.close();
@@ -154,8 +162,41 @@ public class mainAcademia {
 		}
 	}
 
+	public static void ejecutaOQL() {
+		
+		MtDatabase dbcon = new MtDatabase(hostname, dbname);
+		// Abre una conexión a la base de datos
+		dbcon.open();
+		try {
+			// Crea una instancia de Statement
+			Statement stmt = dbcon.createStatement();
+			String commandText = "SELECT REF(p) from academia.profesores p;";
+			// Ejecuta la consulta y obtiene un ResultSet
+			ResultSet rset = stmt.executeQuery(commandText);
+			profesores pr1;
+			
+			// Lee rset uno a uno.
+			while (rset.next()) {
+				// Obtiene los objetos profesores
+				pr1 = (profesores) rset.getObject(1);
+				// Imprime los profesores
+				System.out.println("############################ PROFESOR ################################## \n");
+				System.out.println("Profesor: " + String.format("%16s", pr1.getNombre())
+						+" "+ String.format("%16s", pr1.getApellidos()) + "\n Tlf:" + String.format("%16s", pr1.getTelefono())+ "\n DNI:" + String.format("%16s", pr1.getDni())+"\n");
+			}
+			// Cierra las conexiones
+			rset.close();
+			stmt.close();
+			
+		} catch (SQLException e) {
+			System.out.println("SQLException: " + e.getMessage());
+		}
+	}
+
 	public static void main(String[] args) {
 		// crearObjetos();
-		borrarObjetos();
+		// borrarObjetos();
+		// modificaObjetos("Acceso a Datos", 16);
+		ejecutaOQL();
 	}
 }
