@@ -2,6 +2,7 @@ package academia;
 
 import com.matisse.MtDatabase;
 import com.matisse.MtException;
+import com.matisse.MtObjectIterator;
 import com.matisse.MtPackageObjectFactory;
 
 public class mainAcademia {
@@ -97,17 +98,17 @@ public class mainAcademia {
 	public static void borrarObjetos() {
 
 		try {
-			
+
 			// Abrir base de datos
 			db.open();
 			db.startTransaction();
 			System.out.println("Conectando con la base de datos " + db.toString() + " de Matisse");
-			
+
 			// Mostrar cuantos cursos hay
 			System.out.println(cursos.getInstanceNumber(db) + " cursos en la DB.");
 			// Borra todos los cursos
 			cursos.getClass(db).removeAllInstances();
-			
+
 			// Actualizar y cerrar base de datos
 			db.commit();
 			db.close();
@@ -116,11 +117,45 @@ public class mainAcademia {
 			System.out.println("MtException : " + mte.getMessage());
 		}
 	}
-	
-	
+
+	public static void modificaObjetos(String nombre, Integer nuevaHoraInicio) {
+
+		int nAsignaturas = 0;
+		
+		try {
+			
+			// Abrir base de datos
+			db.open();
+			db.startTransaction();
+			
+			// Listar asignaturas
+			System.out.println(asignaturas.getInstanceNumber(db) + " asignaturas en la DB.");
+			nAsignaturas = (int) asignaturas.getInstanceNumber(db);
+			
+			// Crea un Iterador (propio de Java)
+			MtObjectIterator<asignaturas> iter = asignaturas.<asignaturas>instanceIterator(db);
+			
+			while (iter.hasNext()) {
+				asignaturas[] asig = iter.next(nAsignaturas);
+				for (int i = 0; i < asig.length; i++) {
+					if (asig[i].getNombre().compareTo(nombre) == 0) {
+						asig[i].setHoraInicio(nuevaHoraInicio);
+					}
+				}
+			}
+			iter.close();
+			
+			// Actualizar y cerrar base de datos
+			db.commit();
+			db.close();
+			System.out.println("Modificación realizada.");
+		} catch (MtException mte) {
+			System.out.println("MtException : " + mte.getMessage());
+		}
+	}
 
 	public static void main(String[] args) {
-		//crearObjetos();
+		// crearObjetos();
 		borrarObjetos();
 	}
 }
