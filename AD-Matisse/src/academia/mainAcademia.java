@@ -162,7 +162,7 @@ public class mainAcademia {
 		}
 	}
 
-	public static void ejecutaOQL() {
+	public static void leerOQL() {
 		
 		MtDatabase dbcon = new MtDatabase(hostname, dbname);
 		// Abre una conexión a la base de datos
@@ -197,6 +197,6 @@ public class mainAcademia {
 		// crearObjetos();
 		// borrarObjetos();
 		// modificaObjetos("Acceso a Datos", 16);
-		ejecutaOQL();
+		leerOQL();
 	}
 }
