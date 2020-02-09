@@ -6,7 +6,7 @@ import com.matisse.MtPackageObjectFactory;
 
 public class mainAcademia {
 
-	static MtDatabase db = new MtDatabase("localhost", "academia", new MtPackageObjectFactory("", "academia"));
+	static MtDatabase db = new MtDatabase("localhost", "DBVinDaph", new MtPackageObjectFactory("", "academia"));
 
 	// Crear objetos
 	public static void crearObjetos() {
@@ -94,7 +94,33 @@ public class mainAcademia {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void borrarObjetos() {
 
+		try {
+			
+			// Abrir base de datos
+			db.open();
+			db.startTransaction();
+			System.out.println("Conectando con la base de datos " + db.toString() + " de Matisse");
+			
+			// Mostrar cuantos cursos hay
+			System.out.println(cursos.getInstanceNumber(db) + " cursos en la DB.");
+			// Borra todos los cursos
+			cursos.getClass(db).removeAllInstances();
+			
+			// Actualizar y cerrar base de datos
+			db.commit();
+			db.close();
+			System.out.println("Eliminación realizada");
+		} catch (MtException mte) {
+			System.out.println("MtException : " + mte.getMessage());
+		}
+	}
+	
+	
+
+	public static void main(String[] args) {
+		//crearObjetos();
+		borrarObjetos();
 	}
 }
