@@ -1,0 +1,10 @@
+#
+# Generated with Matisse Schema Definition Language 9.1.12
+# Generation date: Sun Feb 09 21:02:12 2020
+#
+# Mapping of Java classes and indexes to the corresponding database schema objects
+#
+academia.profesores = academia.profesores
+academia.clases = academia.clases
+academia.cursos = academia.cursos
+academia.asignaturas = academia.asignaturas
